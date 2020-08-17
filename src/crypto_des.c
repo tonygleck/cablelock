@@ -141,13 +141,13 @@ static const int p_table[] = {
 };
 
 // Overwrite target array with the XOR of the src array
-static void xor_value(unsigned char* target, const unsigned char* src, size_t length)
-{
-    while (length--)
-    {
-        *target++ ^= *src++;
-    }
-}
+// static void xor_value(unsigned char* target, const unsigned char* src, size_t length)
+// {
+//     while (length--)
+//     {
+//         *target++ ^= *src++;
+//     }
+// }
 
 // Implement the initial and final permutation functions. permute_table
 // and target must have exactly len and len * 8 number of entries,
@@ -352,16 +352,16 @@ static int des_operation(uint32_t operation, const unsigned char* input, size_t 
     return result;
 }
 
-int crypto_des_encrypt(const unsigned char* input, size_t input_len, unsigned char* result_text, size_t result_len,
+int crypto_des_encrypt(const unsigned char* input, size_t input_len, unsigned char* output, size_t result_len,
     const unsigned char* key, const unsigned char* init_vector, bool add_padding)
 {
     int result;
     (void)result_len;
 
     int j = input_len % DES_BLOCK_SIZE;
-    if (input == NULL || input_len == 0 || result_text == NULL || key == NULL)
+    if (input == NULL || input_len == 0 || output == NULL || key == NULL)
     {
-        log_error("Failure invalid parameter specified input: %p, cipher_len: %d, result_text: %p, key: %p", input, (int)input_len, result_text, key);
+        log_error("Failure invalid parameter specified input: %p, cipher_len: %d, output: %p, key: %p", input, (int)input_len, output, key);
         result = __LINE__;
     }
     else
@@ -399,7 +399,7 @@ int crypto_des_encrypt(const unsigned char* input, size_t input_len, unsigned ch
                 iv_value = iv_item;
             }
 
-            result = des_operation(CRYPTO_ENCRYPT, padded_input, padded_len + input_len, result_text, result_len, key, iv_value);
+            result = des_operation(CRYPTO_ENCRYPT, padded_input, padded_len + input_len, output, result_len, key, iv_value);
             if (add_padding)
             {
                 free(padded_input);
@@ -409,14 +409,14 @@ int crypto_des_encrypt(const unsigned char* input, size_t input_len, unsigned ch
     return result;
 }
 
-int crypto_des_decrypt(const unsigned char* cipher_text, size_t cipher_len, unsigned char* result_text,
+int crypto_des_decrypt(const unsigned char* cipher_text, size_t cipher_len, unsigned char* output,
     size_t result_len, const unsigned char* key, const unsigned char* init_vector, bool is_padded)
 {
     int result;
     (void)result_len;
-    if (cipher_text == NULL || cipher_len == 0 || result_text == NULL || key == NULL)
+    if (cipher_text == NULL || cipher_len == 0 || output == NULL || key == NULL)
     {
-        log_error("Failure invalid parameter specified cipher_text: %p, cipher_len: %d, result_text: %p, key: %p", cipher_text, (int)cipher_len, result_text, key);
+        log_error("Failure invalid parameter specified cipher_text: %p, cipher_len: %d, output: %p, key: %p", cipher_text, (int)cipher_len, output, key);
         result = __LINE__;
     }
     else
@@ -429,26 +429,26 @@ int crypto_des_decrypt(const unsigned char* cipher_text, size_t cipher_len, unsi
             iv_value = iv_item;
         }
 
-        result = des_operation(0, cipher_text, cipher_len, result_text, result_len, key, iv_value);
+        result = des_operation(0, cipher_text, cipher_len, output, result_len, key, iv_value);
         if (is_padded)
         {
             // Remove PKCS #5 padding
-            result_text[cipher_len-result_text[cipher_len-1]] = 0x0;
+            output[cipher_len-output[cipher_len-1]] = 0x0;
         }
     }
     return result;
 }
 
-int crypto_3des_encrypt(const unsigned char* input, size_t input_len, unsigned char* result_text, size_t result_len,
+int crypto_3des_encrypt(const unsigned char* input, size_t input_len, unsigned char* output, size_t result_len,
     const unsigned char* key, const unsigned char* init_vector, bool add_padding)
 {
     int result;
     (void)result_len;
 
     int j = input_len % DES_BLOCK_SIZE;
-    if (input == NULL || input_len == 0 || result_text == NULL || key == NULL)
+    if (input == NULL || input_len == 0 || output == NULL || key == NULL)
     {
-        log_error("Failure invalid parameter specified input: %p, cipher_len: %d, result_text: %p, key: %p", input, (int)input_len, result_text, key);
+        log_error("Failure invalid parameter specified input: %p, cipher_len: %d, output: %p, key: %p", input, (int)input_len, output, key);
         result = __LINE__;
     }
     else
@@ -486,7 +486,7 @@ int crypto_3des_encrypt(const unsigned char* input, size_t input_len, unsigned c
                 iv_value = iv_item;
             }
 
-            des_operation(CRYPTO_ENCRYPT|CRYPTO_TRIPLE_DES, padded_input, padded_len + input_len, result_text, result_len, key, iv_value);
+            des_operation(CRYPTO_ENCRYPT|CRYPTO_TRIPLE_DES, padded_input, padded_len + input_len, output, result_len, key, iv_value);
             if (add_padding)
             {
                 free(padded_input);
@@ -496,13 +496,13 @@ int crypto_3des_encrypt(const unsigned char* input, size_t input_len, unsigned c
     return result;
 }
 
-int crypto_3des_decrypt(const unsigned char* cipher_text, size_t cipher_len, unsigned char* result_text,
+int crypto_3des_decrypt(const unsigned char* cipher_text, size_t cipher_len, unsigned char* output,
     size_t result_len, const unsigned char* key, const unsigned char* init_vector, bool is_padded)
 {
     int result;
-    if (cipher_text == NULL || cipher_len == 0 || result_text == NULL || key == NULL)
+    if (cipher_text == NULL || cipher_len == 0 || output == NULL || key == NULL)
     {
-        log_error("Failure invalid parameter specified cipher_text: %p, cipher_len: %d, result_text: %p, key: %p", cipher_text, (int)cipher_len, result_text, key);
+        log_error("Failure invalid parameter specified cipher_text: %p, cipher_len: %d, output: %p, key: %p", cipher_text, (int)cipher_len, output, key);
         result = __LINE__;
     }
     else
@@ -515,11 +515,11 @@ int crypto_3des_decrypt(const unsigned char* cipher_text, size_t cipher_len, uns
             iv_value = iv_item;
         }
 
-        result = des_operation(CRYPTO_TRIPLE_DES, cipher_text, cipher_len, result_text, result_len, key, iv_value);
+        result = des_operation(CRYPTO_TRIPLE_DES, cipher_text, cipher_len, output, result_len, key, iv_value);
         if (is_padded)
         {
             // Remove PKCS #5 padding
-            result_text[cipher_len-result_text[cipher_len-1]] = 0x0;
+            output[cipher_len-output[cipher_len-1]] = 0x0;
         }
     }
     return result;
