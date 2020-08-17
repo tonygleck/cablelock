@@ -95,8 +95,6 @@ UpgradeLog*.htm
 # C/C++ extension for VS Code
 browse.VC.db
 
-deps/
-
 # node
 package-lock.json
 
