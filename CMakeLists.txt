@@ -35,12 +35,16 @@ endif()
 include_directories(${CMAKE_CURRENT_LIST_DIR}/inc)
 
 set(cablelock_h_files
+    ${PROJECT_SOURCE_DIR}/inc/cablelock/big_integer.h
     ${PROJECT_SOURCE_DIR}/inc/cablelock/crypto_ciphers.h
+    ${PROJECT_SOURCE_DIR}/inc/cablelock/crypto_certificate.h
 )
 
 set(cablelock_c_files
     ${PROJECT_SOURCE_DIR}/src/crypto_aes.c
+    ${PROJECT_SOURCE_DIR}/src/big_integer.c
     ${PROJECT_SOURCE_DIR}/src/crypto_des.c
+    ${PROJECT_SOURCE_DIR}/src/crypto_certificate.c
 )
 
 add_library(cablelock ${cablelock_c_files} ${cablelock_h_files})

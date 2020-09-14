@@ -9,3 +9,4 @@ function(add_sample_directory whatIsBuilding)
 endfunction()
 
 add_subdirectory(cablelock_des_sample)
+add_subdirectory(cablelock_cert_sample)

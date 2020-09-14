@@ -2,4 +2,5 @@
 
 cmake_minimum_required(VERSION 3.2.0)
 
+add_unittest_directory(big_integer_ut)
 add_unittest_directory(crypto_des_ut)
