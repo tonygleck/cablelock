@@ -7,6 +7,22 @@
 
 #include "cablelock/big_integer.h"
 
+static void print_bits(char* ty, char* val, const unsigned char* bytes, size_t num_bytes)
+{
+    printf("(%*s) %*s = [ ", 15, ty, 16, val);
+    for (size_t index = 0; index < num_bytes; index++)
+    {
+        for (int inner = 7; 0 <= inner; inner--)
+        {
+            printf("%c", (bytes[index] & (1 << inner) ? '1' : '0'));
+        }
+        printf(" ");
+    }
+    printf("]\n");
+}
+
+#define SHOW_BITS(T,V) do { T x = V; print_bits(#T, #V, (unsigned char*) &x, sizeof(x)); } while(0)
+
 static int allocate_big_int(BIG_INTEGER* value, size_t length)
 {
     int result;
@@ -436,19 +452,18 @@ int big_int_multipy(BIG_INTEGER* op1, BIG_INTEGER* op2)
     return result;
 }
 
+// TODO: Fix Divide
 int big_int_divide(BIG_INTEGER* dividend, BIG_INTEGER* divisor, BIG_INTEGER* quotient)
 {
-    (void)dividend;
-    (void)divisor;
     (void)quotient;
     int result = __LINE__;
-/*    BIG_INTEGER temp = {0};
+    BIG_INTEGER temp = {0};
     if (dividend == NULL || divisor == NULL)
     {
         log_error("Invalid value specified dividend: %p, divisor: %p", dividend, divisor);
         result = __LINE__;
     }
-    else
+/*    else
     {
         int bit_size = 0;
         int bit_position = 0;
@@ -513,16 +528,17 @@ int big_int_divide(BIG_INTEGER* dividend, BIG_INTEGER* divisor, BIG_INTEGER* quo
     return result;
 }
 
+// TODO: Fix exponentiate
 int big_int_exponentiate(BIG_INTEGER* op, const BIG_INTEGER* exp)
 {
     int result;
-    BIG_INTEGER temp = {0};
+    BIG_INTEGER temp1 = {0};
     if (op == NULL || exp == NULL)
     {
         log_error("Invalid value specified op: %p, exp: %p", op, exp);
         result = __LINE__;
     }
-    else if (copy_value(&temp, op) != 0 || set_value(op, 1) != 0)
+    /*else if (copy_value(&temp1, op) != 0 || set_value(op, 1) != 0)
     {
         log_error("Failure copying result value");
         result = __LINE__;
@@ -535,27 +551,39 @@ int big_int_exponentiate(BIG_INTEGER* op, const BIG_INTEGER* exp)
         do
         {
             index--;
+            size_t count = 0;
             for (size_t mask = 0x01; mask; mask <<= 1)
             {
+                char val[128];
+                sprintf(val, "%lu", mask);
+                //SHOW_BITS(unsigned int, val);
+                print_bits("unsigned int", val, (const unsigned char*)&mask, sizeof(mask));
                 if (exp->data[index] & mask)
                 {
-                    if ((result = multiply_operation(op, &temp)) != 0)
+                    if ((result = multiply_operation(op, &temp1)) != 0)
                     {
                         log_error("Failure copying result value");
                         break;
                     }
-                    // Square temp
-                    if (copy_value(&temp2, &temp) != 0 && multiply_operation(&temp, &temp2) != 0)
+                    // Square temp2
+                    if (copy_value(&temp2, &temp1) != 0)
+                    {
+                        log_error("Failure copying result value");
+                        result = __LINE__;
+                        break;
+                    }
+                    else if (multiply_operation(&temp1, &temp2) != 0)
                     {
                         log_error("Failure copying result value");
                         result = __LINE__;
                         break;
                     }
                 }
+                count++;
             }
         } while (index && result == 0);
-        free(temp.data);
+        free(temp1.data);
         free(temp2.data);
-    }
+    }*/
     return result;
 }

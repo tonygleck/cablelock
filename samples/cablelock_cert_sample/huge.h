@@ -22,5 +22,7 @@ void free_huge( huge *h );
 void mod_pow( huge *h1, huge *exp, huge *n, huge *h2 );
 void inv( huge *z, huge *a );
 void contract( huge *h );
+void exponentiate( huge *h1, huge *exp );
+
 
 #endif

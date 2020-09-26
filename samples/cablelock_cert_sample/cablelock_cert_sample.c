@@ -20,11 +20,8 @@ static void printout_bites(const char* text, unsigned char* data, size_t data_le
     printf("\r\n");
 }
 
-int main(int argc, char* argv[])
+static void test_device(void)
 {
-    int result;
-    bool use_padding = false;
-
     huge dividend;
     set_huge(&dividend, 524288);
     huge divisor;
@@ -36,11 +33,35 @@ int main(int argc, char* argv[])
     {
         printf("quotient value is correct");
     }
+}
 
-    //CERTIFIATE_INFO_HANDLE cert_handle = crypto_cert_load(CERT_FILEPATH, KEY_FILEPATH);
-    //if (cert_handle != NULL)
-    //{
-    //    crypto_cert_destroy(cert_handle);
-    //}
+static void test_exponent(void)
+{
+    huge op1_value;
+    huge exp;
+
+    set_huge(&op1_value, 64);
+    set_huge(&exp, 2);
+
+    exponentiate(&op1_value, &exp);
+
+    if (op1_value.size == 1)
+    {
+        printf("printing test");
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    int result;
+    bool use_padding = false;
+
+    //test_exponent();
+
+    CERTIFIATE_INFO_HANDLE cert_handle = crypto_cert_load(CERT_FILEPATH, KEY_FILEPATH);
+    if (cert_handle != NULL)
+    {
+        crypto_cert_destroy(cert_handle);
+    }
     return 0;
 }

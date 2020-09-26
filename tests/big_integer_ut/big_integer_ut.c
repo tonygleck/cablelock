@@ -716,27 +716,28 @@ CTEST_BEGIN_TEST_SUITE(big_integer_ut)
     //     big_int_deinit(&quotient);
     // }
 
-    CTEST_FUNCTION(big_int_exponentiate_success)
-    {
-        // arrange
-        BIG_INTEGER op1_value;
-        BIG_INTEGER exp;
-        CTEST_ASSERT_ARE_EQUAL(int, 0, big_int_assign(&op1_value, 64));
-        CTEST_ASSERT_ARE_EQUAL(int, 0, big_int_assign(&exp, 2));
-        umock_c_reset_all_calls();
+    // CTEST_FUNCTION(big_int_exponentiate_success)
+    // {
+    //     // arrange
+    //     BIG_INTEGER op1_value;
+    //     BIG_INTEGER exp;
+    //     //CTEST_ASSERT_ARE_EQUAL(int, 0, big_int_assign(&op1_value, 64));
+    //     CTEST_ASSERT_ARE_EQUAL(int, 0, big_int_assign(&op1_value, 10));
+    //     CTEST_ASSERT_ARE_EQUAL(int, 0, big_int_assign(&exp, 2));
+    //     umock_c_reset_all_calls();
 
-        // act
-        int result = big_int_exponentiate(&op1_value, &exp);
+    //     // act
+    //     int result = big_int_exponentiate(&op1_value, &exp);
 
-        // assert
-        CTEST_ASSERT_ARE_EQUAL(int, 0, result);
-        CTEST_ASSERT_ARE_EQUAL(int, 2, op1_value.data_len);
-        CTEST_ASSERT_ARE_EQUAL(int, 8, op1_value.data[0]); // 4096
-        CTEST_ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
+    //     // assert
+    //     CTEST_ASSERT_ARE_EQUAL(int, 0, result);
+    //     CTEST_ASSERT_ARE_EQUAL(int, 2, op1_value.data_len);
+    //     CTEST_ASSERT_ARE_EQUAL(int, 8, op1_value.data[0]); // 4096
+    //     CTEST_ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
 
-        // cleanup
-        big_int_deinit(&op1_value);
-        big_int_deinit(&exp);
-    }
+    //     // cleanup
+    //     big_int_deinit(&op1_value);
+    //     big_int_deinit(&exp);
+    // }
 
 CTEST_END_TEST_SUITE(big_integer_ut)
