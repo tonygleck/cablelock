@@ -1,6 +1,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include "lib-util-c/sys_debug_shim.h"
 #include "lib-util-c/app_logging.h"
@@ -211,7 +212,7 @@ static int compare_value(const BIG_INTEGER* op1, const BIG_INTEGER* op2)
     return result;
 }
 
-static int add_operation(BIG_INTEGER* op1, BIG_INTEGER* op2)
+static int add_operation(BIG_INTEGER* op1, const BIG_INTEGER* op2)
 {
     int result = 0;
 
@@ -263,7 +264,7 @@ static int add_operation(BIG_INTEGER* op1, BIG_INTEGER* op2)
     return result;
 }
 
-static int subtract_operation(BIG_INTEGER* op1, BIG_INTEGER* op2)
+static int subtract_operation(BIG_INTEGER* op1, const BIG_INTEGER* op2)
 {
     int result = 0;
     int difference;
@@ -355,7 +356,7 @@ void big_int_deinit(BIG_INTEGER* op)
     }
 }
 
-int big_int_assign(BIG_INTEGER* op, unsigned int value)
+int big_int_assign(BIG_INTEGER* op, uint32_t value)
 {
     int result;
     if (op == NULL)
@@ -407,7 +408,7 @@ int big_int_to_string(const BIG_INTEGER* op, char* string, size_t* length)
     return result;
 }
 
-int big_int_add(BIG_INTEGER* op1, BIG_INTEGER* op2)
+int big_int_add(BIG_INTEGER* op1, const BIG_INTEGER* op2)
 {
     int result = 0;
     if (op1 == NULL || op2 == NULL)
@@ -422,7 +423,7 @@ int big_int_add(BIG_INTEGER* op1, BIG_INTEGER* op2)
     return result;
 }
 
-int big_int_subtract(BIG_INTEGER* op1, BIG_INTEGER* op2)
+int big_int_subtract(BIG_INTEGER* op1, const BIG_INTEGER* op2)
 {
     int result = 0;
     if (op1 == NULL || op2 == NULL)
@@ -437,7 +438,7 @@ int big_int_subtract(BIG_INTEGER* op1, BIG_INTEGER* op2)
     return result;
 }
 
-int big_int_multipy(BIG_INTEGER* op1, BIG_INTEGER* op2)
+int big_int_multipy(BIG_INTEGER* op1, const BIG_INTEGER* op2)
 {
     int result = 0;
     if (op1 == NULL || op2 == NULL)

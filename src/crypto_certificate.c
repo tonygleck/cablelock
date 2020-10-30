@@ -10,6 +10,8 @@
 #include "cablelock/crypto_certificate.h"
 #include "cablelock/crypto_cert_properties.h"
 
+#include "cablelock/asn1_parser.h"
+
 static const char* PEM_HEADER_FRAG = "-----BEGIN";
 #define PEM_HEADER_FRAG_LEN     10
 
@@ -19,9 +21,10 @@ typedef struct CERTIFIATE_INFO_TAG
     const unsigned char* certificate;
     size_t cert_len;
     const void* private_key;
+    ASN1_INFO_HANDLE asn1_info;
 } CERTIFIATE_INFO;
 
-static unsigned char* extract_der_from_cert(const unsigned char* cert_format, size_t length)
+static unsigned char* extract_der_from_cert(const unsigned char* cert_format, size_t length, size_t* der_length)
 {
     unsigned char* result;
     // Check for PEM format
@@ -71,6 +74,7 @@ static unsigned char* extract_der_from_cert(const unsigned char* cert_format, si
         }
         else
         {
+            *der_length = result_len;
         }
     }
     else
@@ -83,6 +87,7 @@ static unsigned char* extract_der_from_cert(const unsigned char* cert_format, si
         else
         {
             memcpy(result, cert_format, length);
+            *der_length = length;
         }
     }
     return result;
@@ -92,14 +97,23 @@ static int parse_certificate(CERTIFIATE_INFO* cert_info)
 {
     int result;
     // base64 decode certificate
-    unsigned char* der_cert = extract_der_from_cert(cert_info->certificate, cert_info->cert_len);
+    size_t der_length;
+    unsigned char* der_cert = extract_der_from_cert(cert_info->certificate, cert_info->cert_len, &der_length);
     if (der_cert == NULL)
     {
         result = __LINE__;
     }
     else
     {
-        result = 0;
+        if ((cert_info->asn1_info = asn1_parse_data(der_cert, der_length)) == NULL)
+        {
+            result = __LINE__;
+        }
+        else
+        {
+            result = 0;
+        }
+        free(der_cert);
     }
     return result;
 }
@@ -216,6 +230,7 @@ void crypto_cert_destroy(CERTIFIATE_INFO_HANDLE handle)
             free((char*)handle->certificate);
             free((char*)handle->private_key);
         }
+        asn1_free(handle->asn1_info);
         free(handle);
     }
 }
